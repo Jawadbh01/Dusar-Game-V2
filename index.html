@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1a0033">
+    <title>DUSAR - Card Game</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        
+        <!-- HOME SCREEN -->
+        <div id="homeScreen" class="screen active">
+            <div class="home-content">
+                <h1 class="game-title">DUSAR</h1>
+                <p class="game-subtitle">Pakistani Card Game</p>
+                <div class="card-symbols">♠ ♥ ♦ ♣</div>
+                <button class="btn btn-primary" id="startGameBtn">Start New Game</button>
+                <button class="btn btn-secondary" id="rulesBtn">How to Play</button>
+            </div>
+        </div>
+
+        <!-- RULES SCREEN -->
+        <div id="rulesScreen" class="screen">
+            <div class="rules-content">
+                <button class="btn-back" id="backBtn">← Back</button>
+                <h2>How to Play DUSAR</h2>
+                <div class="rules-text">
+                    <h3>📋 Game Setup</h3>
+                    <p>• 4 players in 2 teams (diagonal partners)</p>
+                    <p>• 13 cards per player from standard deck</p>
+                    
+                    <h3>💰 Bidding Phase (After 5 cards dealt)</h3>
+                    <p>• Player 1 bids 9-13 or passes</p>
+                    <p>• Each player can bid ONCE (higher than previous)</p>
+                    <p>• Cannot bid twice - only Pass or higher bid</p>
+                    <p>• Highest bidder chooses Trump suit</p>
+                    
+                    <h3>🎴 Card Rankings</h3>
+                    <p>• A (Ace) > K > Q > J > 10 > 9 > 8 > 7 > 6 > 5 > 4 > 3 > 2</p>
+                    <p>• Trump 2 = SUPER CARD (beats everything!)</p>
+                    <p>• Trump suit beats all other cards</p>
+                    
+                    <h3>📍 Trick Rules</h3>
+                    <p>• Must follow suit if you have it</p>
+                    <p>• Trump beats non-trump</p>
+                    <p>• Highest card wins the trick</p>
+                    
+                    <h3>🏆 Scoring</h3>
+                    <p>• Bid 9 & get 9+ = Team gets 9 points</p>
+                    <p>• Bid 9 & get 6 = Opponents get 12 (double!)</p>
+                    <p>• First to 100+ points WINS</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETUP SCREEN -->
+        <div id="setupScreen" class="screen">
+            <div class="setup-content">
+                <button class="btn-back" id="setupBackBtn">← Back</button>
+                <h2>Enter Player Names</h2>
+                <div class="setup-form">
+                    <div class="input-group">
+                        <label>Your Name (Player 1)</label>
+                        <input type="text" id="player1Name" placeholder="You" maxlength="12" value="You">
+                    </div>
+                    <div class="input-group">
+                        <label>Player 2 Name (Right - AI)</label>
+                        <input type="text" id="player2Name" placeholder="Player 2" maxlength="12" value="Bot Ahmed">
+                    </div>
+                    <div class="input-group">
+                        <label>Player 3 Name (Top - AI)</label>
+                        <input type="text" id="player3Name" placeholder="Player 3" maxlength="12" value="Bot Hira">
+                    </div>
+                    <div class="input-group">
+                        <label>Player 4 Name (Left - AI)</label>
+                        <input type="text" id="player4Name" placeholder="Player 4" maxlength="12" value="Bot Hassan">
+                    </div>
+                    <button class="btn btn-primary" id="startBtn">Start Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="gameScreen" class="screen">
+            
+            <!-- HEADER: Scores & Trump -->
+            <div class="game-header">
+                <div class="team-score team-a">
+                    <div class="team-name">TEAM A</div>
+                    <div class="team-points" id="teamAScore">0</div>
+                    <div class="score-dots" id="teamADots">
+                        <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    </div>
+                </div>
+
+                <div class="trump-display" id="trumpDisplay">
+                    <div class="trump-circle">
+                        <div class="trump-suit" id="trumpSuit">?</div>
+                        <div class="trump-label">TRUMP</div>
+                    </div>
+                </div>
+
+                <div class="team-score team-b">
+                    <div class="team-name">TEAM B</div>
+                    <div class="team-points" id="teamBScore">0</div>
+                    <div class="score-dots" id="teamBDots">
+                        <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAME TABLE -->
+            <div class="game-table">
+                
+                <!-- PLAYER 3 (TOP) -->
+                <div class="player-section player-top">
+                    <div class="player-name" id="p3Name">Player 3</div>
+                    <div class="player-cards" id="p3Cards"></div>
+                    <div class="cards-count" id="p3Count">13</div>
+                </div>
+
+                <!-- CENTER TABLE & SIDE PLAYERS -->
+                <div class="table-row">
+                    
+                    <!-- PLAYER 2 (LEFT) -->
+                    <div class="player-section player-left">
+                        <div class="player-name" id="p2Name">Player 2</div>
+                        <div class="player-cards vertical" id="p2Cards"></div>
+                        <div class="cards-count" id="p2Count">13</div>
+                    </div>
+
+                    <!-- CENTER PLAY AREA -->
+                    <div class="play-table">
+                        <div class="table-area" id="tableArea"></div>
+                        <div class="current-bid" id="bidInfo"></div>
+                    </div>
+
+                    <!-- PLAYER 4 (RIGHT) -->
+                    <div class="player-section player-right">
+                        <div class="player-name" id="p4Name">Player 4</div>
+                        <div class="player-cards vertical" id="p4Cards"></div>
+                        <div class="cards-count" id="p4Count">13</div>
+                    </div>
+                </div>
+
+                <!-- PLAYER 1 (BOTTOM - YOU) -->
+                <div class="player-section player-bottom">
+                    <div class="player-name">YOU - PLAYER 1</div>
+                    <div class="player-hand" id="playerHand"></div>
+                    <div class="trump-indicator" id="trumpIndicator">
+                        <div class="trump-suit-small" id="trumpSmall">?</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAME STATUS -->
+            <div class="game-status" id="gameStatus"></div>
+        </div>
+
+        <!-- MODALS -->
+        <div class="modal-overlay" id="modalOverlay"></div>
+
+        <!-- DEALING ANIMATION MODAL -->
+        <div class="modal" id="dealingModal">
+            <div class="dealing-content">
+                <h3>Dealing Cards...</h3>
+                <div class="dealing-animation">
+                    <div class="shuffle-deck"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BIDDING MODAL -->
+        <div class="modal" id="biddingModal">
+            <h3>Place Your Bid</h3>
+            <p class="bid-instruction">You have 5 cards. Bid how many tricks you'll win:</p>
+            <div class="bid-display" id="bidDisplay"></div>
+            <div class="bid-buttons">
+                <button class="bid-btn" data-bid="9">9</button>
+                <button class="bid-btn" data-bid="10">10</button>
+                <button class="bid-btn" data-bid="11">11</button>
+                <button class="bid-btn" data-bid="12">12</button>
+                <button class="bid-btn" data-bid="13">13</button>
+                <button class="bid-btn btn-pass" id="passBtn">PASS</button>
+            </div>
+        </div>
+
+        <!-- TRUMP SELECTION MODAL -->
+        <div class="modal" id="trumpModal">
+            <h3>Choose Trump Suit</h3>
+            <p class="trump-instruction">Highest bidder selects trump</p>
+            <div class="current-bidder" id="biddingPlayerName"></div>
+            <div class="trump-selection">
+                <button class="trump-btn suit-spade" data-suit="♠">♠ SPADE</button>
+                <button class="trump-btn suit-heart" data-suit="♥">♥ HEART</button>
+                <button class="trump-btn suit-diamond" data-suit="♦">♦ DIAMOND</button>
+                <button class="trump-btn suit-club" data-suit="♣">♣ CLUB</button>
+            </div>
+        </div>
+
+        <!-- HAND OVER MODAL -->
+        <div class="modal" id="handOverModal">
+            <h3>Hand Complete!</h3>
+            <div class="hand-over-content" id="handOverContent"></div>
+            <button class="btn btn-primary" id="nextHandBtn">Next Hand</button>
+        </div>
+
+        <!-- GAME OVER MODAL -->
+        <div class="modal" id="gameOverModal">
+            <h3>Game Over!</h3>
+            <div class="game-over-content" id="gameOverContent"></div>
+            <div class="game-over-buttons">
+                <button class="btn btn-primary" id="playAgainBtn">Play Again</button>
+                <button class="btn btn-secondary" id="homeBtn">Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
